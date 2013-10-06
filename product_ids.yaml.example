@@ -9,3 +9,6 @@ csv_quote    : '|'  # This can be '|' or '\'' or '"', for |, ', and " respective
 product_ids  :
     - 211466 # 'DE CHANCENY' CREMANT DE LOIRE ROSE BRUT
     - 666
+
+store_ids    :
+    - 511 # King & Spadina
