@@ -40,3 +40,7 @@ nosetests.xml
 
 #Vim stuff
 *.sw[opn]
+
+# Data specific to this install
+data/*
+product_ids.yaml
