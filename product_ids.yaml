@@ -1,8 +1,11 @@
 # Enter your Product IDs below. You can use '#' to add a comment, everything after the '#' on that line will
 # be ignored.
 ---
-destination : 'prices.csv'
-keep_backups: true
-product_ids :
-                - 211466 # 'DE CHANCENY' CREMANT DE LOIRE ROSE BRUT
-                - 666
+keep_backups : true
+destination  : 'prices.csv'
+csv_separator: ','  # This will be cut down to whatever the first non-space character is if you add more to it
+csv_quote    : '|'  # This can be '|' or '\'' or '"', for |, ', and " respectively.
+
+product_ids  :
+    - 211466 # 'DE CHANCENY' CREMANT DE LOIRE ROSE BRUT
+    - 666

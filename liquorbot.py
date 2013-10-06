@@ -11,15 +11,17 @@ import requests
 DATA_DIR = "data"
 CONFIG_FILE = "product_ids.yaml"
 URL_BASE = "http://lcboapi.com"
+PRODUCT_ENDPOINT = "/".join([URL_BASE, "products/%s"])
 NOW = datetime.now().strftime("%s")
-PRODUCT_ENDPOINT = "%s/products/%%s" % URL_BASE
 
 
 def main():
     with open(CONFIG_FILE, 'r') as config_file:
         config = yaml.load(config_file)
-        destination = os.path.join(DATA_DIR, config.get('destination', 'prices.csv'))
         keep_backups = config.get('keep_backups', True)
+        destination = os.path.join(DATA_DIR, config.get('destination', 'prices.csv'))
+        csv_separator = str(config.get('csv_separator', ',')).strip()[0]
+        csv_quote = config.get('csv_quote', '|')
         product_ids = config.get('product_ids', [])
 
     catalog = dict.fromkeys(product_ids, {})
@@ -36,8 +38,9 @@ def main():
         os.rename(destination, backup)
 
     with open(destination, 'w') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_NONNUMERIC)
-        # This is the column name row in the CSV, the writerow in the loop should 
+        writer = csv.writer(csvfile, delimiter=csv_separator, quotechar=csv_quote,
+                            quoting=csv.QUOTE_NONNUMERIC)
+        # This is the column name row in the CSV, the writerow in the loop should
         # match the order below.
         writer.writerow([
             'ProductID',
