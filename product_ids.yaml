@@ -1,0 +1,8 @@
+# Enter your Product IDs below. You can use '#' to add a comment, everything after the '#' on that line will
+# be ignored.
+---
+destination : 'prices.csv'
+keep_backups: true
+product_ids :
+                - 211466 # 'DE CHANCENY' CREMANT DE LOIRE ROSE BRUT
+                - 666
