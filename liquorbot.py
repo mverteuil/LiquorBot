@@ -90,4 +90,8 @@ def main():
 if __name__ == "__main__":
     if not os.path.exists(DATA_DIR):
         os.mkdir(DATA_DIR)
-    main()
+    try:
+        main()
+        print "New data available!"
+    except Exception:
+        print "An error occurred."
