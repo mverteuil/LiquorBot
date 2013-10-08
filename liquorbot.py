@@ -2,6 +2,7 @@
 import os
 import csv
 from datetime import datetime
+from decimal import Decimal as D
 import json
 
 import yaml
@@ -38,7 +39,7 @@ def main():
         destination = os.path.join(DATA_DIR, config.get('destination', 'prices.csv'))
         csv_separator = str(config.get('csv_separator', ',')).strip()[0]
         csv_quote = config.get('csv_quote', '|')
-        product_ids = config.get('product_ids', [])
+        product_ids = list(reversed(config.get('product_ids', [])))
         store_ids = config.get('store_ids', [])
 
     catalog = dict.fromkeys(product_ids, {})
@@ -78,10 +79,10 @@ def main():
             row = [
                 product_id,
                 product.get('name', 'Not Found'),
-                product.get('price_in_cents', 0) / 100,
-                product.get('regular_price_in_cents', 0) / 100,
-                product.get('package_unit_volume_in_milliliters', 0),
-                product.get('price_per_liter_in_cents', 0) / 100,
+                D(product.get('price_in_cents', 0)) / D(100),
+                D(product.get('regular_price_in_cents', 0)) / D(100),
+                D(product.get('package_unit_volume_in_milliliters', 0)),
+                D(product.get('price_per_liter_in_cents', 0)) / D(100),
             ]
             row += [product.get('q%s' % store_id, 0) for store_id in store_ids]
             writer.writerow(row)
