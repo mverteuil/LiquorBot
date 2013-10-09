@@ -4,6 +4,7 @@ import csv
 from datetime import datetime
 from decimal import Decimal as D
 import json
+import unicodedata
 
 import yaml
 
@@ -18,6 +19,14 @@ INVENTORY_SEGMENT = "inventory"
 PRODUCT_ENDPOINT = "/".join([URL_BASE, PRODUCT_SEGMENT])
 INVENTORY_ENDPOINT = "/".join([URL_BASE, STORE_SEGMENT, PRODUCT_SEGMENT, INVENTORY_SEGMENT])
 NOW = datetime.now().strftime("%s")
+
+
+def get_clean_product_name(product):
+    """ Clean accents from product names, because CSV writer can't deal with them """
+    return unicodedata.normalize(
+        'NFKD',
+        product.get('name', 'Not Found')
+    ).encode('ascii', 'ignore')
 
 
 def get_quantity_at_store(store_id, product_id):
@@ -76,9 +85,10 @@ def main():
         columns += ['QuantityAt%s' % store_id for store_id in store_ids]
         writer.writerow(columns)
         for product_id, product in catalog.items():
+            product_name = get_clean_product_name(product)
             row = [
                 product_id,
-                product.get('name', 'Not Found'),
+                product_name,
                 D(product.get('price_in_cents', 0)) / D(100),
                 D(product.get('regular_price_in_cents', 0)) / D(100),
                 D(product.get('package_unit_volume_in_milliliters', 0)),
@@ -94,5 +104,5 @@ if __name__ == "__main__":
     try:
         main()
         print "New data available!"
-    except Exception:
-        print "An error occurred."
+    except Exception, err:
+        print "An error occurred. %s" % err
