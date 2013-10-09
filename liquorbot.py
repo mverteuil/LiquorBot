@@ -25,7 +25,7 @@ def get_clean_product_name(product):
     """ Clean accents from product names, because CSV writer can't deal with them """
     return unicodedata.normalize(
         'NFKD',
-        product.get('name', 'Not Found')
+        unicode(product.get('name', 'Not Found'))
     ).encode('ascii', 'ignore')
 
 
@@ -48,7 +48,7 @@ def main():
         destination = os.path.join(DATA_DIR, config.get('destination', 'prices.csv'))
         csv_separator = str(config.get('csv_separator', ',')).strip()[0]
         csv_quote = config.get('csv_quote', '|')
-        product_ids = list(reversed(config.get('product_ids', [])))
+        product_ids = config.get('product_ids', [])
         store_ids = config.get('store_ids', [])
 
     catalog = dict.fromkeys(product_ids, {})
@@ -84,7 +84,8 @@ def main():
         ]
         columns += ['QuantityAt%s' % store_id for store_id in store_ids]
         writer.writerow(columns)
-        for product_id, product in catalog.items():
+        for product_id in product_ids:
+            product = catalog.get(product_id)
             product_name = get_clean_product_name(product)
             row = [
                 product_id,
